@@ -2,6 +2,7 @@ package ru.otus.spring02.dao;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import com.opencsv.CSVParser;
@@ -16,7 +17,7 @@ import ru.otus.spring02.domain.Question;
 @Repository
 public class QuestionDaoSimple implements QuestionDao {
 
-    private ArrayList<Question> questions;
+    private LinkedList<Question> questions;
 
     public QuestionDaoSimple(@Value("${file.name}") String fileName, @Value("${lang.locale}") Locale locale) {
         CSVReader csvReader;
@@ -30,7 +31,7 @@ public class QuestionDaoSimple implements QuestionDao {
             String[] nextLine;
             int index = 0;
 
-            this.questions = new ArrayList<Question>();
+            this.questions = new LinkedList<Question>();
             while ((nextLine = csvReader.readNext()) != null) {
                 for (String string : nextLine){
                     String[] value;

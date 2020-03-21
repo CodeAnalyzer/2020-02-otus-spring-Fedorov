@@ -11,16 +11,6 @@ public class ExamServiceImpl implements ExamService {
     private QuestionService questionService;
     private ProcessService processService;
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-    public void setQuestionService(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-    public void setConsoleService(ProcessService processService) {
-        this.processService = processService;
-    }
-
     @Autowired
     public ExamServiceImpl(QuestionService questionService, ProcessService processService, Student student) {
         this.student = student;
