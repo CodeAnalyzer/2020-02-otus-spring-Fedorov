@@ -14,6 +14,7 @@ import ru.otus.springframework05.domain.Author;
 import ru.otus.springframework05.domain.Book;
 import ru.otus.springframework05.domain.Genre;
 import ru.otus.springframework05.exception.BookAlreadyExistsException;
+import ru.otus.springframework05.exception.BookNotFoundException;
 
 @Repository
 public class BookDaoImpl implements BookDao {
@@ -40,7 +41,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Book insert(Book book) throws BookAlreadyExistsException {
-        if (findBookByParam(book.getAuthor().getAuthorID(), book.getGenre().getGenreID(), book.getTitle()).size() > 0){
+        if (checkExists(book)){
             throw new BookAlreadyExistsException(" Книга " + book.getTitle() + " уже добавлена в базу!");
         }
 
@@ -58,28 +59,32 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void update(Book book) {
-        if (checkExists(book.getBookID())){
-            MapSqlParameterSource params = new MapSqlParameterSource();
-            params.addValue("bookID", book.getBookID());
-            params.addValue("title", book.getTitle());
-            params.addValue("genreID", book.getGenre().getGenreID());
-            params.addValue("authorID", book.getAuthor().getAuthorID());
-
-            int res = namedParameterJdbcOperations.update(
-                    "update book set title = :title, genreID = :genreID, authorID = :authorID where bookID = :bookID", params
-            );
+    public void update(Book book)  throws BookNotFoundException {
+        if (!checkExists(book)) {
+            throw new BookNotFoundException(" Книга с ID="+ book.getBookID() +" не найдена в базе!");
         }
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("bookID", book.getBookID());
+        params.addValue("title", book.getTitle());
+        params.addValue("genreID", book.getGenre().getGenreID());
+        params.addValue("authorID", book.getAuthor().getAuthorID());
+
+        namedParameterJdbcOperations.update(
+                "update book set title = :title, genreID = :genreID, authorID = :authorID where bookID = :bookID", params
+        );
     }
 
     @Override
-    public void delete(Long bookID) {
-        if (checkExists(bookID)){
-            Map<String, Object> params = Collections.singletonMap("bookID", bookID);
-            namedParameterJdbcOperations.update(
-                    "delete from book where bookID = :bookID", params
-            );
+    public void delete(Book book)  throws BookNotFoundException {
+        if (!checkExists(book)){
+            throw new BookNotFoundException(" Книга с ID="+ book.getBookID() +" не найдена в базе!");
         }
+
+        Map<String, Object> params = Collections.singletonMap("bookID", book.getBookID());
+        namedParameterJdbcOperations.update(
+               "delete from book where bookID = :bookID", params
+        );
     }
 
     @Override
@@ -123,11 +128,32 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public boolean checkExists(Long bookID) {
+        int res = 0;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("bookID", bookID);
-        int res =  namedParameterJdbcOperations.queryForObject(
+        res =  namedParameterJdbcOperations.queryForObject(
                 "select count(*) from book where bookID = :bookID", params, Integer.class
         );
+        return res>0;
+    }
+
+    @Override
+    public boolean checkExists(Book book) {
+        int res = 0;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        if (book.getBookID() != 0){
+            params.addValue("bookID", book.getBookID());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from book where bookID = :bookID", params, Integer.class
+            );
+        } else {
+            params.addValue("title", book.getTitle());
+            params.addValue("genreID", book.getGenre().getGenreID());
+            params.addValue("authorID", book.getAuthor().getAuthorID());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from book where title = :title and genreID = :genreID and authorID = :authorID", params, Integer.class
+            );
+        }
         return res>0;
     }
 }

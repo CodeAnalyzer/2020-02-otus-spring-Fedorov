@@ -24,13 +24,13 @@ public class GenreServiceImpl implements GenreService{
         if (genre != null){
             try {
                 genreDao.insert(genre);
-                shellService.genreInsertSuccess(genre);
+                shellService.messagePrintOut("genre.success.insert", new Object[] {genre.getGenreID(), genre.getName()});
             } catch (GenreAlreadyExistsException e) {
-                shellService.genreInsertError(e.getMessage());
+                shellService.messagePrintOut("genre.error.insert", e.getMessage());
             }
         }
         else{
-            shellService.genreInsertError("");
+            shellService.messagePrintOut("genre.error.insert");
         }
     }
 
@@ -39,22 +39,22 @@ public class GenreServiceImpl implements GenreService{
         Genre genre = shellService.genreUpdate();
         if (genre != null){
             genreDao.update(genre);
-            shellService.genreUpdateSuccess(genre);
+            shellService.messagePrintOut("genre.success.update", new Object[] {genre.getGenreID(), genre.getName()});
         }
         else{
-            shellService.genreUpdateError();
+            shellService.messagePrintOut("genre.error.update");
         }
     }
 
     @Override
     public void delete() {
-        Long genreID = shellService.genreDelete();
-        if (genreID > 0){
-            genreDao.delete(genreID);
-            shellService.genreDeleteSuccess(genreID);
+        Genre genre = shellService.genreDelete();
+        if (genre.getGenreID() > 0){
+            genreDao.delete(genre);
+            shellService.messagePrintOut("genre.success.delete", new Object[] {genre.getGenreID()});
         }
         else{
-            shellService.genreDeleteError();
+            shellService.messagePrintOut("genre.error.delete");
         }
     }
 

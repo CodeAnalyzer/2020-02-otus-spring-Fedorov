@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import ru.otus.springframework05.domain.Author;
-import ru.otus.springframework05.exception.AuthorAlreadyExistsException;
+import ru.otus.springframework05.exception.*;
 
 @Repository
 public class AuthorDaoImpl implements AuthorDao {
@@ -35,7 +35,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author insert(Author author) throws AuthorAlreadyExistsException {
-        if (findByName(author.getName()).size() > 0){
+        if (checkExists(author)){
             throw new AuthorAlreadyExistsException("Автор " + author.getName() + " уже добавлен в базу!");
         }
 
@@ -51,26 +51,29 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public void update(Author author) {
-        if (checkExists(author.getAuthorID())){
-            MapSqlParameterSource params = new MapSqlParameterSource();
-            params.addValue("authorID", author.getAuthorID());
-            params.addValue("name", author.getName());
-
-            int res = namedParameterJdbcOperations.update(
-                    "update author set name = :name where authorID = :authorID", params
-            );
+    public void update(Author author) throws AuthorNotFoundException{
+        if (!checkExists(author)) {
+            throw new AuthorNotFoundException("Автор c ID="+author.getAuthorID()+" не найден в базе!");
         }
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("authorID", author.getAuthorID());
+        params.addValue("name", author.getName());
+        namedParameterJdbcOperations.update(
+                "update author set name = :name where authorID = :authorID", params
+        );
     }
 
     @Override
-    public void delete(Long authorID) {
-        if (checkExists(authorID)){
-            Map<String, Object> params = Collections.singletonMap("authorID", authorID);
-            namedParameterJdbcOperations.update(
-                    "delete from author where authorID = :authorID", params
-            );
+    public void delete(Author author) throws AuthorNotFoundException{
+        if (!checkExists(author)) {
+            throw new AuthorNotFoundException("Автор c ID="+author.getAuthorID()+" не найден в базе!");
         }
+
+        Map<String, Object> params = Collections.singletonMap("authorID", author.getAuthorID());
+        namedParameterJdbcOperations.update(
+                "delete from author where authorID = :authorID", params
+        );
     }
 
     @Override
@@ -98,12 +101,20 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public boolean checkExists(Long authorID) {
+    public boolean checkExists(Author author) {
+        int res = 0;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("authorID", authorID);
-        int res =  namedParameterJdbcOperations.queryForObject(
-                "select count(*) from author where authorID = :authorID", params, Integer.class
-        );
+        if (author.getAuthorID() != 0){
+            params.addValue("authorID", author.getAuthorID());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from author where authorID = :authorID", params, Integer.class
+            );
+        } else {
+            params.addValue("name", author.getName());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from author where name = :name", params, Integer.class
+            );
+        }
         return res>0;
     }
 }

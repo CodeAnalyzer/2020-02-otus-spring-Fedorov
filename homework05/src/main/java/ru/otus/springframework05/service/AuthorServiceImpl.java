@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.springframework05.dao.AuthorDao;
 import ru.otus.springframework05.domain.Author;
 import ru.otus.springframework05.exception.AuthorAlreadyExistsException;
+import ru.otus.springframework05.exception.AuthorNotFoundException;
 
 import java.util.List;
 
@@ -24,13 +25,13 @@ public class AuthorServiceImpl implements AuthorService {
         if (author != null){
             try {
                 authorDao.insert(author);
-                shellService.authorInsertSuccess(author);
+                shellService.messagePrintOut("author.success.insert", new Object[] {author.getAuthorID(), author.getName()});
             } catch (AuthorAlreadyExistsException e) {
-                shellService.authorInsertError(e.getMessage());
+                shellService.messagePrintOut("author.error.insert", e.getMessage());
             }
         }
         else{
-            shellService.authorInsertError("");
+            shellService.messagePrintOut("author.error.insert");
         }
     }
 
@@ -38,23 +39,31 @@ public class AuthorServiceImpl implements AuthorService {
     public void update() {
         Author author = shellService.authorUpdate();
         if (author != null){
-            authorDao.update(author);
-            shellService.authorUpdateSuccess(author);
+            try {
+                authorDao.update(author);
+                shellService.messagePrintOut("author.success.update", new Object[] {author.getAuthorID(), author.getName()});
+            } catch (AuthorNotFoundException e) {
+                shellService.messagePrintOut("author.error.update", e.getMessage());
+            }
         }
         else{
-            shellService.authorUpdateError();
+            shellService.messagePrintOut("author.error.update");
         }
     }
 
     @Override
     public void delete() {
-        Long authorID = shellService.authorDelete();
-        if (authorID > 0){
-            authorDao.delete(authorID);
-            shellService.authorDeleteSuccess(authorID);
+        Author author = shellService.authorDelete();
+        if (author.getAuthorID() > 0){
+            try {
+                authorDao.delete(author);
+                shellService.messagePrintOut("author.success.delete", new Object[] {author.getAuthorID()});
+            } catch (AuthorNotFoundException e) {
+                shellService.messagePrintOut("author.error.delete", e.getMessage());
+            }
         }
         else{
-            shellService.authorDeleteError();
+            shellService.messagePrintOut("author.error.delete");
         }
     }
 

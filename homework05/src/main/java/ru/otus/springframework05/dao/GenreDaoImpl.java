@@ -35,7 +35,7 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre insert(Genre genre) throws GenreAlreadyExistsException {
-        if (findByName(genre.getName()).size() > 0){
+        if (checkExists(genre)){
             throw new GenreAlreadyExistsException("Жанр " + genre.getName() + " уже добавлен в базу!");
         }
 
@@ -52,7 +52,7 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public void update(Genre genre) {
-        if (checkExists(genre.getGenreID())){
+        if (checkExists(genre)){
             MapSqlParameterSource params = new MapSqlParameterSource();
             params.addValue("GenreID", genre.getGenreID());
             params.addValue("name", genre.getName());
@@ -64,9 +64,9 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public void delete(Long genreID) {
-        if (checkExists(genreID)){
-            Map<String, Object> params = Collections.singletonMap("genreID", genreID);
+    public void delete(Genre genre) {
+        if (checkExists(genre)){
+            Map<String, Object> params = Collections.singletonMap("genreID", genre.getGenreID());
             namedParameterJdbcOperations.update(
                     "delete from genre where genreID = :genreID", params
             );
@@ -98,12 +98,20 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public boolean checkExists(Long genreID) {
+    public boolean checkExists(Genre genre) {
+        int res = 0;
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("genreID", genreID);
-        int res =  namedParameterJdbcOperations.queryForObject(
-                "select count(*) from genre where genreID = :genreID", params, Integer.class
-        );
+        if (genre.getGenreID() > 0 ){
+            params.addValue("genreID", genre.getGenreID());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from genre where genreID = :genreID", params, Integer.class
+            );
+        } else {
+            params.addValue("name", genre.getName());
+            res =  namedParameterJdbcOperations.queryForObject(
+                    "select count(*) from genre where name = :name", params, Integer.class
+            );
+        }
         return res>0;
     }
 }

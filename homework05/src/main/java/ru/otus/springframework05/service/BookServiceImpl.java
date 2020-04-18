@@ -10,6 +10,7 @@ import ru.otus.springframework05.domain.Book;
 import ru.otus.springframework05.domain.Genre;
 import ru.otus.springframework05.exception.AuthorAlreadyExistsException;
 import ru.otus.springframework05.exception.BookAlreadyExistsException;
+import ru.otus.springframework05.exception.BookNotFoundException;
 import ru.otus.springframework05.exception.GenreAlreadyExistsException;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class BookServiceImpl implements BookService{
         String authorName = shellService.bookAuthorNameInput();
         List<Author> authors = authorDao.findByName(authorName);
         if (authors.size() > 1) {
-            shellService.bookFoundToManyAuthors();
+            shellService.messagePrintOut("book.error.foundToManyAuthors");
             return;
         } else
         if (authors.size() == 1) {
@@ -45,7 +46,7 @@ public class BookServiceImpl implements BookService{
             try {
                 author = authorDao.insert(new Author(0L, authorName));
             } catch (AuthorAlreadyExistsException e) {
-                shellService.authorInsertError(e.getMessage());
+                shellService.messagePrintOut("author.error.insert", e.getMessage());
             }
         }
 
@@ -53,7 +54,7 @@ public class BookServiceImpl implements BookService{
         String genreName = shellService.bookGenreNameInput();
         List<Genre> genres = genreDao.findByName(genreName);
         if (genres.size() > 1) {
-            shellService.bookFoundToManyGenres();
+            shellService.messagePrintOut("book.error.foundToManyGenres");
             return;
         } else
         if (genres.size() == 1) {
@@ -63,7 +64,7 @@ public class BookServiceImpl implements BookService{
             try {
                 genre = genreDao.insert(new Genre(0L, genreName));
             } catch (GenreAlreadyExistsException e) {
-                shellService.genreInsertError(e.getMessage());
+                shellService.messagePrintOut("genre.error.insert", e.getMessage());
             }
         }
 
@@ -71,9 +72,9 @@ public class BookServiceImpl implements BookService{
         Book book = new Book(0L, title, author, genre);
         try {
             bookDao.insert(book);
-            shellService.bookInsertSuccess(book);
+            shellService.messagePrintOut("book.success.insert", new Object[] {book.getBookID(), book.getTitle()});
         } catch (BookAlreadyExistsException e){
-            shellService.bookInsertError(e.getMessage());
+            shellService.messagePrintOut("book.error.insert", e.getMessage());
         }
     }
 
@@ -81,7 +82,7 @@ public class BookServiceImpl implements BookService{
     public void update() {
         Long bookID = shellService.bookIDInput();
         if (!bookDao.checkExists(bookID)){
-            shellService.bookNotFound();
+            shellService.messagePrintOut("book.error.bookNotFound");
             return;
         }
         Book book = bookDao.findByID(bookID).orElse(null);
@@ -91,7 +92,7 @@ public class BookServiceImpl implements BookService{
         String authorName = shellService.bookAuthorNameInput();
         List<Author> authors = authorDao.findByName(authorName);
         if (authors.size() > 1) {
-            shellService.bookFoundToManyAuthors();
+            shellService.messagePrintOut("book.error.foundToManyAuthors");
             return;
         } else
         if (authors.size() == 1) {
@@ -101,7 +102,7 @@ public class BookServiceImpl implements BookService{
             try {
                 author = authorDao.insert(new Author(0L, authorName));
             } catch (AuthorAlreadyExistsException e) {
-                shellService.authorInsertError(e.getMessage());
+                shellService.messagePrintOut("author.error.insert", e.getMessage());
             }
         }
 
@@ -109,7 +110,7 @@ public class BookServiceImpl implements BookService{
         String genreName = shellService.bookGenreNameInput();
         List<Genre> genres = genreDao.findByName(genreName);
         if (genres.size() > 1) {
-            shellService.bookFoundToManyGenres();
+            shellService.messagePrintOut("book.error.foundToManyGenres");
             return;
         } else
         if (genres.size() == 1) {
@@ -119,7 +120,7 @@ public class BookServiceImpl implements BookService{
             try {
                 genre = genreDao.insert(new Genre(0L, genreName));
             } catch (GenreAlreadyExistsException e) {
-                shellService.genreInsertError(e.getMessage());
+                shellService.messagePrintOut("genre.error.insert", e.getMessage());
             }
         }
 
@@ -127,9 +128,9 @@ public class BookServiceImpl implements BookService{
         Book newBook = new Book(bookID, title, author, genre);
         try {
             bookDao.update(newBook);
-            shellService.bookUpdateSuccess(newBook);
+            shellService.messagePrintOut("book.success.update", new Object[] {newBook.getBookID(), newBook.getTitle()});
         } catch (Exception e){
-            shellService.bookUpdateError();
+            shellService.messagePrintOut("book.error.update", e.getMessage());
         }
     }
 
@@ -137,11 +138,17 @@ public class BookServiceImpl implements BookService{
     public void delete() {
         Long bookID = shellService.bookIDInput();
         if (!bookDao.checkExists(bookID)){
-            shellService.bookNotFound();
+            shellService.messagePrintOut("book.error.bookNotFound");
             return;
         }
-        bookDao.delete(bookID);
-        shellService.bookDeleteSuccess(bookID);
+
+        try {
+            bookDao.delete(new Book(bookID, "", null, null));
+            shellService.messagePrintOut("book.success.delete", new Object[] {bookID});
+        } catch (BookNotFoundException e) {
+            shellService.messagePrintOut("book.error.delete", e.getMessage());
+        }
+
     }
 
     @Override

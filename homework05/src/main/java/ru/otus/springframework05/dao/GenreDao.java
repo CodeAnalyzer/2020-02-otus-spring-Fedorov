@@ -10,10 +10,10 @@ public interface GenreDao {
 
     Genre insert(Genre genre) throws GenreAlreadyExistsException;
     void update(Genre genre);
-    void delete(Long genreID);
+    void delete(Genre genre);
 
     List<Genre> findAll();
     Optional<Genre> findByID(Long genreID);
     List<Genre> findByName(String name);
-    boolean checkExists(Long genreID);
+    boolean checkExists(Genre genre);
 }

@@ -18,6 +18,4 @@ public class Book {
         this.author = author;
         this.genre  = genre;
     }
-
-
 }

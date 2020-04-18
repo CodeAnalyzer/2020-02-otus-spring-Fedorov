@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.otus.springframework05.exception.BookAlreadyExistsException;
+import ru.otus.springframework05.exception.*;
 
 import ru.otus.springframework05.domain.Author;
 import ru.otus.springframework05.domain.Book;
@@ -52,7 +52,7 @@ public class BookDaoImplTest {
 
     @Test
     @DisplayName("должен корректно изменять книгу в базе")
-    void shouldCorrectUpdateBook(){
+    void shouldCorrectUpdateBook() throws BookNotFoundException {
         Book updBook = new Book(DEFAULT_BOOK_ID, DEFAULT_BOOK_NAME2, new Author(DEFAULT_AUTHOR_ID,""), new Genre(DEFAULT_GENRE_ID, ""));
         bookDaoImpl.update(updBook);
         Book foundBook = bookDaoImpl.findByID(DEFAULT_BOOK_ID).orElse(null);
@@ -61,8 +61,8 @@ public class BookDaoImplTest {
 
     @Test
     @DisplayName("должен корректно удалять книгу из базы")
-    void shouldCorrectDeleteBook() {
-        bookDaoImpl.delete(DEFAULT_BOOK_ID);
+    void shouldCorrectDeleteBook() throws BookNotFoundException{
+        bookDaoImpl.delete(new Book(DEFAULT_BOOK_ID, DEFAULT_BOOK_NAME, null, null));
         assertThat(bookDaoImpl.checkExists(DEFAULT_BOOK_ID)).isEqualTo(false);
     }
 
