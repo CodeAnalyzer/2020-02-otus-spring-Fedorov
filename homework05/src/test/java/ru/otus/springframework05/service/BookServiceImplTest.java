@@ -56,6 +56,9 @@ public class BookServiceImplTest {
     @MockBean
     private ShellServiceImpl shellService;
 
+    @MockBean
+    private MessageServiceImpl messageService;
+
     @Test
     @DisplayName("должен корректно добавлять в базу книгу")
     void shouldCorrectInsertBook() throws BookAlreadyExistsException{

@@ -41,7 +41,7 @@ public class BookDaoImplTest {
     void shouldCorrectInsertBook() throws BookAlreadyExistsException {
         Book newBook = new Book(0L, NEW_BOOK_NAME, new Author(DEFAULT_AUTHOR_ID,""), new Genre(DEFAULT_GENRE_ID, ""));
         Book book = bookDaoImpl.insert(newBook);
-        assertThat(bookDaoImpl.checkExists(NEW_BOOK_ID)).isEqualTo(true);
+        assertThat(bookDaoImpl.checkExists(newBook)).isEqualTo(true);
 
         Book foundBook = bookDaoImpl.findByID(NEW_BOOK_ID).orElse(null);
         Author author = foundBook.getAuthor();
@@ -62,8 +62,9 @@ public class BookDaoImplTest {
     @Test
     @DisplayName("должен корректно удалять книгу из базы")
     void shouldCorrectDeleteBook() throws BookNotFoundException{
-        bookDaoImpl.delete(new Book(DEFAULT_BOOK_ID, DEFAULT_BOOK_NAME, null, null));
-        assertThat(bookDaoImpl.checkExists(DEFAULT_BOOK_ID)).isEqualTo(false);
+        Book delBook = new Book(DEFAULT_BOOK_ID, DEFAULT_BOOK_NAME, null, null);
+        bookDaoImpl.delete(delBook);
+        assertThat(bookDaoImpl.checkExists(delBook)).isEqualTo(false);
     }
 
     @Test

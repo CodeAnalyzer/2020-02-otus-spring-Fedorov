@@ -12,10 +12,12 @@ public class GenreServiceImpl implements GenreService{
 
     private final GenreDao genreDao;
     private final ShellService shellService;
+    private final MessageService messageService;
 
-    public GenreServiceImpl(GenreDao genreDao, ShellService shellService) {
+    public GenreServiceImpl(GenreDao genreDao, ShellService shellService, MessageService messageService) {
         this.genreDao = genreDao;
         this.shellService = shellService;
+        this.messageService = messageService;
     }
 
     @Override
@@ -24,13 +26,13 @@ public class GenreServiceImpl implements GenreService{
         if (genre != null){
             try {
                 genreDao.insert(genre);
-                shellService.messagePrintOut("genre.success.insert", new Object[] {genre.getGenreID(), genre.getName()});
+                messageService.messagePrintOut("genre.success.insert", new Object[] {genre.getGenreID(), genre.getName()});
             } catch (GenreAlreadyExistsException e) {
-                shellService.messagePrintOut("genre.error.insert", e.getMessage());
+                messageService.messagePrintOut("genre.error.insert", e.getMessage());
             }
         }
         else{
-            shellService.messagePrintOut("genre.error.insert");
+            messageService.messagePrintOut("genre.error.insert");
         }
     }
 
@@ -39,10 +41,10 @@ public class GenreServiceImpl implements GenreService{
         Genre genre = shellService.genreUpdate();
         if (genre != null){
             genreDao.update(genre);
-            shellService.messagePrintOut("genre.success.update", new Object[] {genre.getGenreID(), genre.getName()});
+            messageService.messagePrintOut("genre.success.update", new Object[] {genre.getGenreID(), genre.getName()});
         }
         else{
-            shellService.messagePrintOut("genre.error.update");
+            messageService.messagePrintOut("genre.error.update");
         }
     }
 
@@ -51,10 +53,10 @@ public class GenreServiceImpl implements GenreService{
         Genre genre = shellService.genreDelete();
         if (genre.getGenreID() > 0){
             genreDao.delete(genre);
-            shellService.messagePrintOut("genre.success.delete", new Object[] {genre.getGenreID()});
+            messageService.messagePrintOut("genre.success.delete", new Object[] {genre.getGenreID()});
         }
         else{
-            shellService.messagePrintOut("genre.error.delete");
+            messageService.messagePrintOut("genre.error.delete");
         }
     }
 

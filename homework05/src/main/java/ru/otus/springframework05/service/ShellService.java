@@ -9,11 +9,6 @@ import java.util.List;
 
 public interface ShellService {
 
-    // Common service
-    void messagePrintOut(String messageID);
-    void messagePrintOut(String messageID, String message);
-    void messagePrintOut(String messageID, @Nullable Object[] objects);
-
     // Shell service for Author
 
     Author authorInsert();

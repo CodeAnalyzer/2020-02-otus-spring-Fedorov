@@ -115,31 +115,22 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> findBookByParam(Long authorID, Long genreID, String title) {
-        String sql = String.format(
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("title", title);
+        params.put("genreID", genreID);
+        params.put("authorID", authorID);
+        List<Book> res = namedParameterJdbcOperations.query(
                 "select book.bookID, book.title, author.name, author.authorID, genre.name, genre.genreID\n" +
-                "from book \n" +
-                "inner join author on author.authorID = book.authorID\n" +
-                "inner join genre on genre.genreID = book.genreID\n"+
-                "where book.title = '%s' and book.genreID = %d and book.authorID = %d",
-                title, genreID, authorID);
-        List<Book> res = namedParameterJdbcOperations.getJdbcOperations().query(sql, new BookMapper());
+                        "from book \n" +
+                        "inner join author on author.authorID = book.authorID\n" +
+                        "inner join genre on genre.genreID = book.genreID\n"+
+                        "where book.title = :title and book.genreID = :genreID and book.authorID = :authorID", params,  new BookMapper());
         return res;
     }
 
     @Override
-    public boolean checkExists(Long bookID) {
-        int res = 0;
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("bookID", bookID);
-        res =  namedParameterJdbcOperations.queryForObject(
-                "select count(*) from book where bookID = :bookID", params, Integer.class
-        );
-        return res>0;
-    }
-
-    @Override
     public boolean checkExists(Book book) {
-        int res = 0;
+        Integer res = 0;
         MapSqlParameterSource params = new MapSqlParameterSource();
         if (book.getBookID() != 0){
             params.addValue("bookID", book.getBookID());
