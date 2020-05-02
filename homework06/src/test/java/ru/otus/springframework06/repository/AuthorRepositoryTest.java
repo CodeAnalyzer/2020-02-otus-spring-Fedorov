@@ -1,0 +1,64 @@
+package ru.otus.springframework06.repository;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import ru.otus.springframework06.SpringFramework06Application;
+import ru.otus.springframework06.domain.Author;
+import ru.otus.springframework06.exception.AuthorAlreadyExistsException;
+import ru.otus.springframework06.exception.AuthorNotFoundException;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DisplayName("Repository для работы с авторами")
+@Import({AuthorRepositoryJpa.class})
+@ContextConfiguration(classes=SpringFramework06Application.class)
+@DataJpaTest
+class AuthorRepositoryTest {
+
+    private static final Long DEFAULT_AUTHOR_ID = 1L;
+    private static final String DEFAULT_AUTHOR_NAME = "Mark Twain";
+
+    private static final Long NEW_AUTHOR_ID = 2L;
+    private static final String NEW_AUTHOR_NAME = "Jack London";
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private TestEntityManager entityManager;
+
+    @Test
+    @DisplayName("должен корректно добавлять в базу автора")
+    void shouldCorrectInsertAuthor() throws AuthorAlreadyExistsException {
+        Author author  = new Author(0L,  NEW_AUTHOR_NAME);
+        authorRepository.insert(author);
+
+        Optional<Author> authorDB  = authorRepository.findByID(NEW_AUTHOR_ID);
+
+        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("authorID", NEW_AUTHOR_ID);
+        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("name", NEW_AUTHOR_NAME);
+    }
+
+    @Test
+    @DisplayName("должен корректно удалять из базы автора")
+    void shouldCorrectDeleteAuthorByID() throws AuthorNotFoundException {
+        Author author  = new Author(DEFAULT_AUTHOR_ID,  DEFAULT_AUTHOR_NAME);
+        authorRepository.delete(author);
+        assertThat(authorRepository.checkExists(author)).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("должен корректно искать автора в базе по ID")
+    void shouldCorrectFindAuthorByID() {
+        Optional<Author> authorDB = authorRepository.findByID(DEFAULT_AUTHOR_ID);
+        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("authorID", DEFAULT_AUTHOR_ID);
+        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("name", DEFAULT_AUTHOR_NAME);
+    }
+}
