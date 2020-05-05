@@ -1,19 +1,18 @@
 package ru.otus.springframework06.repository;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework06.domain.Author;
 import ru.otus.springframework06.exception.AuthorAlreadyExistsException;
 import ru.otus.springframework06.exception.AuthorNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Transactional
 public class AuthorRepositoryJpa implements AuthorRepository{
 
     @PersistenceContext
@@ -41,12 +40,9 @@ public class AuthorRepositoryJpa implements AuthorRepository{
         if (!checkExists(author)) {
             throw new AuthorNotFoundException("Автор c ID="+author.getAuthorID()+" не найден в базе!");
         }
-        TypedQuery<Author> query = entityManager.createQuery(
-                "select a from Author a where a.authorID = :authorID",
-                Author.class);
+        Query query = entityManager.createQuery("delete from Author a where a.authorID = :authorID");
         query.setParameter("authorID", author.getAuthorID());
-        Author authorDB =  query.getSingleResult();
-        entityManager.remove(authorDB);
+        query.executeUpdate();
     }
 
     @Override

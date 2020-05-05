@@ -1,6 +1,8 @@
 package ru.otus.springframework06.service;
 
 import org.springframework.stereotype.Service;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 @Service
@@ -21,6 +23,13 @@ public class InputOutputServiceImpl implements InputOutputService {
     }
 
     public Long readLong() {
-        return scanner.nextLong();
+        Long value = 0L;
+        try{
+            value = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            printOut("Ошибка ввода числового значения!");
+            value = -1L;
+        }
+        return value;
     }
 }

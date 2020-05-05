@@ -1,6 +1,7 @@
 package ru.otus.springframework06.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework06.domain.Genre;
 import ru.otus.springframework06.exception.GenreAlreadyExistsException;
 import ru.otus.springframework06.exception.GenreNotFoundException;
@@ -22,6 +23,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
+    @Transactional
     public void insert() {
         Genre genre = shellService.genreInsert();
         if (genre != null){
@@ -38,6 +40,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
+    @Transactional
     public void update() {
         Genre genre = shellService.genreUpdate();
         if (genre != null){
@@ -54,6 +57,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
+    @Transactional
     public void delete() {
         Genre genre = shellService.genreDelete();
         if (genre.getGenreID() > 0){
@@ -70,6 +74,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void findAll() {
         List<Genre> list = genreRepository.findAll();
         shellService.genreListOutput(list);

@@ -3,6 +3,7 @@ package ru.otus.springframework06.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework06.domain.Author;
 import ru.otus.springframework06.exception.AuthorAlreadyExistsException;
 import ru.otus.springframework06.exception.AuthorNotFoundException;
@@ -24,6 +25,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public void insert() {
         Author author = shellService.authorInsert();
         if (author != null){
@@ -40,6 +42,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public void update() {
         Author author = shellService.authorUpdate();
         if (author != null){
@@ -56,6 +59,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional
     public void delete() {
         Author author = shellService.authorDelete();
         if (author.getAuthorID() > 0){
@@ -72,6 +76,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void findAll() {
         List<Author> list = authorRepository.findAll();
         shellService.authorListOutput(list);

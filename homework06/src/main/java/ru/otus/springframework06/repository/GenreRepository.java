@@ -1,6 +1,5 @@
 package ru.otus.springframework06.repository;
 
-
 import ru.otus.springframework06.domain.Genre;
 import ru.otus.springframework06.exception.GenreAlreadyExistsException;
 import ru.otus.springframework06.exception.GenreNotFoundException;

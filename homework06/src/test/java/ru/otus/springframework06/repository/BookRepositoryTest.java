@@ -52,8 +52,8 @@ class BookRepositoryTest {
         bookRepository.insert(newBook);
 
         Optional<Book> bookDB  = bookRepository.findByID(NEW_BOOK_ID);
-        assertThat(bookDB.get()).hasFieldOrPropertyWithValue("bookID", NEW_BOOK_ID);
-        assertThat(bookDB.get()).hasFieldOrPropertyWithValue("title", NEW_BOOK_TITLE);
+        assertThat(bookDB).isNotEmpty().get().hasFieldOrPropertyWithValue("bookID", NEW_BOOK_ID);
+        assertThat(bookDB).isNotEmpty().get().hasFieldOrPropertyWithValue("title", NEW_BOOK_TITLE);
     }
 
     @Test
@@ -72,8 +72,8 @@ class BookRepositoryTest {
     @DisplayName("должен корректно искать книгу в базе по ID")
     void shouldCorrectFindBookByID() {
         Optional<Book> bookDB = bookRepository.findByID(DEFAULT_BOOK_ID);
-        assertThat(bookDB.get()).hasFieldOrPropertyWithValue("bookID", DEFAULT_BOOK_ID);
-        assertThat(bookDB.get()).hasFieldOrPropertyWithValue("title", DEFAULT_BOOK_TITLE);
+        assertThat(bookDB).isNotEmpty().get().hasFieldOrPropertyWithValue("bookID", DEFAULT_BOOK_ID);
+        assertThat(bookDB).isNotEmpty().get().hasFieldOrPropertyWithValue("title", DEFAULT_BOOK_TITLE);
     }
 
 }

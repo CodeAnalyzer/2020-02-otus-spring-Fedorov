@@ -2,6 +2,7 @@ package ru.otus.springframework06.service;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework06.domain.Author;
 import ru.otus.springframework06.domain.Book;
 import ru.otus.springframework06.domain.Genre;
@@ -74,6 +75,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    @Transactional
     public void insert() {
         Author author = getAuthor().orElse(null);
         if (author == null)
@@ -94,6 +96,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    @Transactional
     public void update() {
         Long bookID = shellService.bookIDInput();
         if (!bookRepository.checkExists(new Book(bookID, null, null, null))){
@@ -122,6 +125,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    @Transactional
     public void delete() {
         Long bookID = shellService.bookIDInput();
         if (!bookRepository.checkExists(new Book(bookID, null, null, null))){
@@ -139,6 +143,7 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void findAll() {
         List<Book> list = bookRepository.findAll();
         shellService.bookListOutput(list);

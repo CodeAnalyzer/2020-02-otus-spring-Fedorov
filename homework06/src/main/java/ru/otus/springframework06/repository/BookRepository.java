@@ -16,4 +16,5 @@ public interface BookRepository {
     List<Book> findAll();
     Optional<Book> findByID(Long bookID);
     boolean checkExists(Book book);
+    Long getCount();
 }

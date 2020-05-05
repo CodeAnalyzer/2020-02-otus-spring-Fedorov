@@ -42,8 +42,8 @@ public class GenreRepositoryTest {
 
         Optional<Genre> genreDB  = genreRepository.findByID(NEW_GENRE_ID);
 
-        assertThat(genreDB.get()).hasFieldOrPropertyWithValue("genreID", NEW_GENRE_ID);
-        assertThat(genreDB.get()).hasFieldOrPropertyWithValue("name", NEW_GENRE_NAME);
+        assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("genreID", NEW_GENRE_ID);
+        assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("name", NEW_GENRE_NAME);
     }
 
     @Test
@@ -58,8 +58,8 @@ public class GenreRepositoryTest {
     @DisplayName("должен корректно искать жанр в базе по ID")
     void shouldCorrectFindGenreByID() {
         Optional<Genre> genreDB = genreRepository.findByID(DEFAULT_GENRE_ID);
-        assertThat(genreDB.get()).hasFieldOrPropertyWithValue("genreID", DEFAULT_GENRE_ID);
-        assertThat(genreDB.get()).hasFieldOrPropertyWithValue("name", DEFAULT_GENRE_NAME);
+        assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("genreID", DEFAULT_GENRE_ID);
+        assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("name", DEFAULT_GENRE_NAME);
     }
 
 }

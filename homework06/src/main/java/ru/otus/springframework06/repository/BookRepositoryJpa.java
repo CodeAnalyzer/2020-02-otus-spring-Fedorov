@@ -1,20 +1,15 @@
 package ru.otus.springframework06.repository;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework06.domain.Book;
 import ru.otus.springframework06.exception.BookAlreadyExistsException;
 import ru.otus.springframework06.exception.BookNotFoundException;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Transactional
 public class BookRepositoryJpa implements BookRepository{
 
     @PersistenceContext
@@ -22,22 +17,28 @@ public class BookRepositoryJpa implements BookRepository{
 
     @Override
     public void insert(Book book) throws BookAlreadyExistsException {
+        if (checkExists(book)){
+            throw new BookAlreadyExistsException("Книга " + book.getTitle() + " уже добавлена в базу!");
+        }
         entityManager.persist(book);
     }
 
     @Override
     public void update(Book book) throws BookNotFoundException {
+        if (!checkExists(book)){
+            throw new BookNotFoundException("Книга " + book.getTitle() + " не найдена в базе!");
+        }
         entityManager.merge(book);
     }
 
     @Override
     public void delete(Book book) throws BookNotFoundException {
-        TypedQuery<Book> query = entityManager.createQuery(
-                "select b from Book b where b.bookID = :bookID",
-                Book.class);
+        if (!checkExists(book)){
+            throw new BookNotFoundException("Книга " + book.getTitle() + " не найдена в базе!");
+        }
+        Query query = entityManager.createQuery("delete from Book b where b.bookID = :bookID");
         query.setParameter("bookID", book.getBookID());
-        Book bookDB =  query.getSingleResult();
-        entityManager.remove(bookDB);
+        query.executeUpdate();
     }
 
     @Override
@@ -50,7 +51,11 @@ public class BookRepositoryJpa implements BookRepository{
 
     @Override
     public Optional<Book> findByID(Long bookID) {
-        return Optional.of(entityManager.find(Book.class, bookID));
+        TypedQuery<Book> query = entityManager.createQuery(
+                "select b from Book b where b.bookID = :bookID",
+                Book.class);
+        query.setParameter("bookID", bookID);
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     @Override
@@ -73,5 +78,11 @@ public class BookRepositoryJpa implements BookRepository{
             cnt = query.getSingleResult();
         }
         return cnt > 0 ;
+    }
+
+    @Override
+    public Long getCount() {
+        TypedQuery<Long> query = entityManager.createQuery("select count(b) from Book b", Long.class);
+        return query.getSingleResult();
     }
 }

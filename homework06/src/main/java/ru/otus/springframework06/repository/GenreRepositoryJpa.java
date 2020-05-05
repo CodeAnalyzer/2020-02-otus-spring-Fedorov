@@ -1,22 +1,18 @@
 package ru.otus.springframework06.repository;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.springframework06.domain.Author;
 import ru.otus.springframework06.domain.Genre;
-import ru.otus.springframework06.exception.AuthorAlreadyExistsException;
-import ru.otus.springframework06.exception.AuthorNotFoundException;
 import ru.otus.springframework06.exception.GenreAlreadyExistsException;
 import ru.otus.springframework06.exception.GenreNotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Transactional
 public class GenreRepositoryJpa implements GenreRepository{
 
     @PersistenceContext
@@ -44,12 +40,9 @@ public class GenreRepositoryJpa implements GenreRepository{
         if (!checkExists(genre)) {
             throw new GenreNotFoundException("Жанр c ID="+genre.getGenreID()+" не найден в базе!");
         }
-        TypedQuery<Genre> query = entityManager.createQuery(
-                "select g from Genre g where g.genreID = :genreID",
-                Genre.class);
+        Query query = entityManager.createQuery("delete from Genre g where g.genreID = :genreID");
         query.setParameter("genreID", genre.getGenreID());
-        Genre genreDB =  query.getSingleResult();
-        entityManager.remove(genreDB);
+        query.executeUpdate();
     }
 
     @Override

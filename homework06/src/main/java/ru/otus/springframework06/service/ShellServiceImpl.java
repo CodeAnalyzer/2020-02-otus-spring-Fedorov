@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import ru.otus.springframework06.domain.Author;
 import ru.otus.springframework06.domain.Book;
+import ru.otus.springframework06.domain.Comment;
 import ru.otus.springframework06.domain.Genre;
 
 import java.util.List;
@@ -96,6 +97,40 @@ public class ShellServiceImpl implements ShellService{
                     + genre.getName();
             inputOutputService.printOut(message);
         }
+    }
+
+    @Override
+    public String commentRemarkInput() {
+        messageService.messagePrintOut("comment.remark.input");
+        String remark = inputOutputService.readString();
+        return remark;
+    }
+
+    @Override
+    public Long commentIDInput() {
+        messageService.messagePrintOut("comment.ID.input");
+        Long commentID = inputOutputService.readLong();
+        inputOutputService.readString();
+        return commentID;
+    }
+
+
+    @Override
+    public void commentListOutput(List<Comment> list) {
+        if (list.size() == 0) {
+            messageService.messagePrintOut("comment.list.empty");
+            return;
+        }
+
+        for(int i = 0; i < list.size(); i++) {
+            Comment comment = list.get(i);
+            String message = messageService.getMessage("comment.ID.output")
+                    + String.valueOf(comment.getCommentID()) + "; "
+                    + messageService.getMessage("comment.remark.output")
+                    + comment.getRemark();
+            inputOutputService.printOut(message);
+        }
+
     }
 
     @Override

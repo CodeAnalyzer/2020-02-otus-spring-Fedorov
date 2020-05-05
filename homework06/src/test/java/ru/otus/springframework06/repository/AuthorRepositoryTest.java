@@ -42,8 +42,8 @@ class AuthorRepositoryTest {
 
         Optional<Author> authorDB  = authorRepository.findByID(NEW_AUTHOR_ID);
 
-        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("authorID", NEW_AUTHOR_ID);
-        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("name", NEW_AUTHOR_NAME);
+        assertThat(authorDB).isNotEmpty().get().hasFieldOrPropertyWithValue("authorID", NEW_AUTHOR_ID);
+        assertThat(authorDB).isNotEmpty().get().hasFieldOrPropertyWithValue("name", NEW_AUTHOR_NAME);
     }
 
     @Test
@@ -58,7 +58,7 @@ class AuthorRepositoryTest {
     @DisplayName("должен корректно искать автора в базе по ID")
     void shouldCorrectFindAuthorByID() {
         Optional<Author> authorDB = authorRepository.findByID(DEFAULT_AUTHOR_ID);
-        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("authorID", DEFAULT_AUTHOR_ID);
-        assertThat(authorDB.get()).hasFieldOrPropertyWithValue("name", DEFAULT_AUTHOR_NAME);
+        assertThat(authorDB).isNotEmpty().get().hasFieldOrPropertyWithValue("authorID", DEFAULT_AUTHOR_ID);
+        assertThat(authorDB).isNotEmpty().get().hasFieldOrPropertyWithValue("name", DEFAULT_AUTHOR_NAME);
     }
 }
