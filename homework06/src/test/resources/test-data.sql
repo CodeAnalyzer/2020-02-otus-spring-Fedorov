@@ -1,0 +1,1 @@
+insert into book(bookID, authorID, genreID, title) values(1, 1, 1, 'Tom Sawyer');

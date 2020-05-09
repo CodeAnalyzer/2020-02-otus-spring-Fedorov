@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    data: test-data.sql
+
+  shell:
+    interactive:
+      enabled: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/rootChangeLog.xml
