@@ -20,10 +20,10 @@ public class Book {
     @Field(name = "title")
     private String title;
 
-    @Field(name = "authorID")
+    @Field(name = "author")
     private Author author;
 
-    @Field(name = "genreID")
+    @Field(name = "genre")
     private Genre genre;
 
 }

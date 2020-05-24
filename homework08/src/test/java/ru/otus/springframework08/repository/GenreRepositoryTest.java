@@ -3,8 +3,7 @@ package ru.otus.springframework08.repository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.springframework08.domain.Genre;
 
@@ -35,13 +34,6 @@ public class GenreRepositoryTest {
         assertThat(genreDB).isNotEmpty().get().isEqualTo(genre);
     }
 
-    @Test
-    @DisplayName("должен корректно удалять из базы жанр")
-    void shouldCorrectDeleteGenreByID() {
-        Genre genre  = new Genre(DEFAULT_GENRE_ID,  DEFAULT_GENRE_NAME);
-        genreRepository.delete(genre);
-        assertThat(genreRepository.existsById(DEFAULT_GENRE_ID)).isEqualTo(false);
-    }
 
     @Test
     @DisplayName("должен корректно искать жанр в базе по ID")
@@ -50,8 +42,19 @@ public class GenreRepositoryTest {
         genreRepository.save(genre);
 
         Optional<Genre> genreDB = genreRepository.findById(DEFAULT_GENRE_ID);
+
         assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("genreID", DEFAULT_GENRE_ID);
         assertThat(genreDB).isNotEmpty().get().hasFieldOrPropertyWithValue("name", DEFAULT_GENRE_NAME);
     }
 
+    @Test
+    @DisplayName("должен корректно удалять из базы жанр")
+    void shouldCorrectDeleteGenreByID()  {
+        Genre genre  = new Genre(NEW_GENRE_ID,  NEW_GENRE_NAME);
+        genreRepository.save(genre);
+        assertThat(genreRepository.existsById(NEW_GENRE_ID)).isEqualTo(true);
+
+        genreRepository.delete(genre);
+        assertThat(genreRepository.existsById(NEW_GENRE_ID)).isEqualTo(false);
+    }
 }

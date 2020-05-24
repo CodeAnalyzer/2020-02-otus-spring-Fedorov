@@ -48,9 +48,12 @@ class AuthorRepositoryTest {
     @Test
     @DisplayName("должен корректно удалять из базы автора")
     void shouldCorrectDeleteAuthorByID() {
-        Author author  = new Author(DEFAULT_AUTHOR_ID,  DEFAULT_AUTHOR_NAME);
+        Author author  = new Author(NEW_AUTHOR_ID,  NEW_AUTHOR_NAME);
+        authorRepository.save(author);
+        assertThat(authorRepository.existsById(NEW_AUTHOR_ID)).isEqualTo(true);
+
         authorRepository.delete(author);
-        assertThat(authorRepository.existsById(DEFAULT_AUTHOR_ID)).isEqualTo(false);
+        assertThat(authorRepository.existsById(NEW_AUTHOR_ID)).isEqualTo(false);
     }
 
 }

@@ -51,6 +51,8 @@ class BookRepositoryTest {
         Book book  = new Book(DEFAULT_BOOK_ID, DEFAULT_BOOK_TITLE,
                 new Author(DEFAULT_AUTHOR_ID, DEFAULT_AUTHOR_NAME),
                 new Genre(DEFAULT_GENRE_ID, DEFAULT_GENRE_NAME));
+        bookRepository.save(book);
+        assertThat(bookRepository.existsById(DEFAULT_BOOK_ID)).isEqualTo(true);
 
         bookRepository.delete(book);
         assertThat(bookRepository.existsById(DEFAULT_BOOK_ID)).isEqualTo(false);
