@@ -1,0 +1,13 @@
+application:
+  locale: ru_RU
+
+spring:
+  data:
+    mongodb:
+      port: 0
+      database: Otus08
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
