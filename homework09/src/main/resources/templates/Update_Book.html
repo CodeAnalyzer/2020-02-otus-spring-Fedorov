@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Edit book</title>
+	<style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+	<div class="container my-5">
+	<h3> Редактирование книги </h3>
+		<div class="card">
+			<div class="card-body">
+				<div class="col-md-8">
+					<form action="#"
+						th:action="@{/books/update/{id}(id=${book.bookID})}"
+						th:object="${book}" method="post">
+						<div class="row">
+							<div class="row">
+								<label for="bookID-input">ID книги:</label>
+								<input id="bookID-input" type="text" th:field="${book.bookID}" value="1000500"/>
+							</div>
+							<div class="row">
+								<label for="AuthorName-input">Имя автора:</label>
+								<input id="AuthorName-input" type="text" th:field="${book.author.name}" value="Jack London"/>
+							</div>
+							<div class="row">
+								<label for="GenreName-input">Название жанра:</label>
+								<input id="GenreName-input" type="text" th:field="${book.genre.name}" value="Novel"/>
+							</div>
+							<div class="row">
+								<label for="holder-input">Название книги:</label>
+								<input id="holder-input" name="name" type="text" th:field="${book.title}" value="Martin Eden"/>
+							</div>
+							<div class="col-md-6">
+								<input type="submit" class="btn btn-primary" value="Изменить книгу">
+							</div>
+							<div class="form-group col-md-8"></div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
