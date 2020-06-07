@@ -20,7 +20,7 @@
 			<div class="book-body">
 				<div th:switch="${books}" class="container my-5">
 					<p class="my-5">
-						<a href="/Add_Book" class="btn btn-primary"><i
+						<a href="/books/add_form" class="btn btn-primary"><i
 							class="fas fa-user-plus ml-2">Добавить книгу</i></a>
 					</p>
 					<div class="col-md-10">
@@ -44,10 +44,10 @@
 										<td th:text="${book.author.name}">Mark Twain</td>
 										<td th:text="${book.title}">Tom Sawyer</td>
 										<td>
-											<a href="#" th:text="${book.bookID}" th:href="@{/books/update/{id}(id=${book.bookID})}">Редактировать</a>
+											<a href="#" th:href="@{/books/edit_form/{id}(id=${book.bookID})}">Edit</a>
 										</td>
 										<td>
-											<a href="#" th:text="${book.bookID}" th:href="@{/books/delete/{id}(id=${book.bookID})}">Удалить</a>
+											<a href="#" th:href="@{/books/delete_form/{id}(id=${book.bookID})}">Del</a>
 										</td>
 									</tr>
 								</tbody>
