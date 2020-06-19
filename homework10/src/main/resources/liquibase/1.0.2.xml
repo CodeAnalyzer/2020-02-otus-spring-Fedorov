@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        
+    <property name="autoIncrement" value="false" dbms="postgresql,mssql,oracle"/>
+    <property name="autoIncrement" value="true" dbms="h2"/>
+
+        <changeSet id="1.0.2.01" author="afedorov" context="update" runInTransaction="false">
+                <preConditions onFail="MARK_RAN">
+                        <not>
+                                <tableExists tableName="Comment"/>
+                        </not>
+                </preConditions>
+
+                <createSequence sequenceName="Comment_CommentID_seq" incrementBy="1" startValue="1"/>
+
+                <createTable tableName="Comment">
+                        <column name="commentID" type="Long" autoIncrement="${autoIncrement}" defaultValueSequenceNext="Comment_CommentID_seq">
+                                <constraints primaryKey="true" nullable="false" />
+                        </column>
+                        <column name="bookID" type="Long">
+                                <constraints nullable="false" />
+                        </column>
+                        <column name="remark" type="VARCHAR(255)">
+                                <constraints nullable="false" />
+                        </column>
+                </createTable>
+
+                <createIndex tableName="Comment" indexName="XPKComment" unique="true">
+                        <column name="commentID"/>
+                </createIndex>
+
+                <comment>Creation of table Comment</comment>
+        </changeSet>
+
+</databaseChangeLog>
