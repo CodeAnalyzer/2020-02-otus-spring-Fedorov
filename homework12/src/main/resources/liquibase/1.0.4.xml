@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        
+    <property name="autoIncrement" value="false" dbms="postgresql,mssql,oracle"/>
+    <property name="autoIncrement" value="true" dbms="h2"/>
+
+    <changeSet id="1.0.4.01" author="afedorov" context="update" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Book"/>
+        </preConditions>
+
+        <insert tableName="Book">
+            <column name="bookID" value = "1" />
+            <column name="authorID" value = "1" />
+            <column name="genreID" value = "1" />
+            <column name="title" value = "Tom Sawyer"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="1.0.4.02" author="afedorov" context="update" runInTransaction="false">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="Comment"/>
+        </preConditions>
+
+        <insert tableName="Comment">
+            <column name="commentID" value = "1" />
+            <column name="bookID" value = "1" />
+            <column name="remark" value = "Tom Sawyer is nice novel"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
