@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+        
+    <property name="autoIncrement" value="false" dbms="postgresql,mssql,oracle"/>
+    <property name="autoIncrement" value="true" dbms="h2"/>
+
+        <changeSet id="1.0.5.01" author="afedorov" context="update" runInTransaction="false">
+                <preConditions onFail="MARK_RAN">
+                        <not>
+                                <tableExists tableName="User"/>
+                        </not>
+                </preConditions>
+
+                <createSequence sequenceName="User_UserID_seq" incrementBy="1" startValue="1"/>
+
+                <createTable tableName="User">
+                        <column name="userID" type="Long" autoIncrement="${autoIncrement}" defaultValueSequenceNext="User_UserID_seq">
+                                <constraints primaryKey="true" nullable="false" />
+                        </column>
+                        <column name="name" type="VARCHAR(255)">
+                                <constraints nullable="false" />
+                        </column>
+                        <column name="password" type="VARCHAR(255)">
+                                <constraints nullable="false" />
+                        </column>
+                        <column name="editor" type="Long">
+                                <constraints nullable="false" />
+                        </column>
+                        <column name="eraser" type="Long">
+                                <constraints nullable="false" />
+                        </column>
+                </createTable>
+
+                <createIndex tableName="User" indexName="XPKUser" unique="true">
+                        <column name="userID"/>
+                </createIndex>
+
+                <comment>Creation of table User</comment>
+        </changeSet>
+
+        <changeSet id="1.0.5.02" author="afedorov" context="update" runInTransaction="false">
+                <preConditions onFail="MARK_RAN">
+                        <tableExists tableName="User"/>
+                </preConditions>
+
+                <insert tableName="User">
+                        <column name="userID" value = "1" />
+                        <column name="name" value = "admin" />
+                        <column name="password" value = "IamBOSS" />
+                        <column name="editor" value = "1" />
+                        <column name="eraser" value = "1" />
+                </insert>
+
+                <insert tableName="User">
+                        <column name="userID" value = "2" />
+                        <column name="name" value = "AdvancedUser" />
+                        <column name="password" value = "123456" />
+                        <column name="editor" value = "1" />
+                        <column name="eraser" value = "0" />
+                </insert>
+
+                <insert tableName="User">
+                        <column name="userID" value = "3" />
+                        <column name="name" value = "SimpleUser" />
+                        <column name="password" value = "qwerty" />
+                        <column name="editor" value = "0" />
+                        <column name="eraser" value = "0" />
+                </insert>
+
+                <comment>Creation of default users</comment>
+        </changeSet>
+
+</databaseChangeLog>
