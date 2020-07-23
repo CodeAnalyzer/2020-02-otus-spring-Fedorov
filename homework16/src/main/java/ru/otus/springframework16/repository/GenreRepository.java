@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework16.domain.Genre;
 import java.util.List;
 
-@Transactional
 public interface GenreRepository extends JpaRepository<Genre, Long> {
 
     @Transactional(readOnly = true)

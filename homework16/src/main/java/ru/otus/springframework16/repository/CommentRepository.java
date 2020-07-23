@@ -8,7 +8,6 @@ import ru.otus.springframework16.domain.Comment;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-@Transactional
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Transactional(readOnly = true)

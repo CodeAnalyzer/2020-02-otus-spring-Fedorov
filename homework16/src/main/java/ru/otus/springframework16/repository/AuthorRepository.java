@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.springframework16.domain.Author;
 import java.util.List;
 
-@Transactional
 public interface AuthorRepository extends JpaRepository<Author, Long> {
 
     @Transactional(readOnly = true)

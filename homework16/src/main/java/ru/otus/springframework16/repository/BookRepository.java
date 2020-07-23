@@ -7,7 +7,6 @@ import ru.otus.springframework16.domain.Book;
 
 import java.util.List;
 
-@Transactional
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Transactional(readOnly = true)
