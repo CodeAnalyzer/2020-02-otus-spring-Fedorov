@@ -24,10 +24,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,metrics"
+        include: "health,metrics,logfile"
   endpoint:
     health:
       show-details: always
   health:
     defaults:
       enabled: true
+
+logging:
+  file:
+    path: C:\
+    name: LibraryTools.log
